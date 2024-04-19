@@ -22,7 +22,7 @@ Your API key can be updated in the following source file:
 
 ```
 # TODO: ADD OPENAI API KEY BEFORE RUNNING build.sh!
-# OPENAI_API_KEY =
+OPENAI_API_KEY =
 ``` 
 
 Once you have updated the API key, run the build script `build.sh` in the terminal using the following command: `./build.sh`

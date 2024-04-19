@@ -6,7 +6,7 @@ import requests
 CHATGPT_API_URL = "https://api.openai.com/v1/chat/completions"
 
 # TODO: ADD OPENAI API KEY BEFORE RUNNING build.sh!
-# OPENAI_API_KEY = 
+OPENAI_API_KEY = 
 
 # define the IOCTL commands
 IOCTL_CHATGPT_QUERY = 0x1000
