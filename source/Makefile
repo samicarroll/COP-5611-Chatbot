@@ -1,21 +1,20 @@
-TARGET = kernel_module.kext
-OBJS = kernel_module.o
+# Makefile to work with Linux machine
 
-SDK_PATH ?= /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+# kernel build directory
+KERNELDIR := /lib/modules/$(KVERSION)/build
 
-CC = clang
-LD = ld
+# module name
+MODULE_NAME := kernel_module
 
-CFLAGS = -Wall -Werror -O2
-LDFLAGS = -arch arm64 macosx_version_min 11.0 -lkmod
+# source files
+SRC := kernel_module.c
 
-all: $(TARGET)
+# build target
+obj-m += $(MODULE_NAME).o
 
-$(TARGET): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+# default target
+all:
+    $(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+    $(MAKE) -C $(KERNELDIR) M=$(PWD) clean
