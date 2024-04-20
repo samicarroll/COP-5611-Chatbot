@@ -1,7 +1,12 @@
+# Makefile to work with macOS Silicon Architecture
+
+# target and object related to kernel_module.c
 TARGET = kernel_module.kext
 OBJS = kernel_module.o
 
+# path to Apple SDK needed to develop kernel extension
 SDK_PATH ?= /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+
 
 CC = clang
 LD = ld

@@ -1,20 +1,28 @@
-# Makefile to work with Linux machine
+# Kernel version
+KERNEL_VERSION := $(shell uname -r)
 
-# kernel build directory
-KERNELDIR := /lib/modules/$(KVERSION)/build
+# Compiler and compiler flags
+CC := gcc
+CFLAGS := -Wall -I/path/to/headers -I/another/path/to/headers
 
-# module name
-MODULE_NAME := kernel_module
+# Kernel source directory
+KERNEL_SRC := /lib/modules/$(KERNEL_VERSION)/build
 
-# source files
-SRC := kernel_module.c
+# Module name
+MODULE_NAME := chatbot
 
-# build target
-obj-m += $(MODULE_NAME).o
+# Source files
+SRC := $(MODULE_NAME).c
 
-# default target
-all:
-    $(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+# Object files
+OBJ := $(MODULE_NAME).o
+
+# Targets
+all: $(MODULE_NAME).ko
+
+$(MODULE_NAME).ko: $(OBJ)
+	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) modules
 
 clean:
-    $(MAKE) -C $(KERNELDIR) M=$(PWD) clean
+	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) clean
+	rm -f $(MODULE_NAME).ko
