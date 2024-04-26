@@ -1,30 +1,26 @@
-import os
-import json
+import openai
 
-# Path to the character device file
-DEVICE_FILE = "/dev/chatbot_device"
+# Set your OpenAI API key
+openai.api_key = ''
 
-def send_input_to_kernel(input_text):
-    with open(DEVICE_FILE, "w") as device:
-        request = {"input": input_text}
-        device.write(json.dumps(request))
-
-def read_response_from_kernel():
-    with open(DEVICE_FILE, "r") as device:
-        response = device.read()
-        return json.loads(response)
+def send_input_to_openai(input_str):
+    response = openai.Completion.create(
+        engine="davinci",
+        prompt=input_str,
+        max_tokens=50
+    )
+    return response.choices[0].text.strip()
 
 def main():
     print("Welcome to Chatbot!")
-    print("Type your messages, or type 'quit' to exit.")
+    print("Type your messages, or type 'quit' or 'q' to exit.")
     while True:
         user_input = input("You: ")
-        if user_input.lower() == "quit":
+        if user_input.lower() in ["quit", "q"]:
             print("Exiting Chatbot.")
             break
-        send_input_to_kernel(user_input)
-        response = read_response_from_kernel()
-        print("Chatbot:", response["output"])
+        response = send_input_to_openai(user_input)
+        print("Chatbot:", response)
 
 if __name__ == "__main__":
     main()
