@@ -1,23 +1,30 @@
-def send_input_to_kernel(input_str):
-    with open("/dev/chatbot", "w") as device:
-        device.write(input_str)
+import os
+import openai
 
-def read_response_from_kernel():
-    with open("/dev/chatbot", "r") as device:
+# Set your OpenAI API key here
+openai.api_key = ''
+
+DEVICE_FILE = "/dev/chatbot"
+
+def read_response():
+    with open(DEVICE_FILE, "r") as device:
         response = device.read()
         return response
 
+def write_input(input_str):
+    with open(DEVICE_FILE, "w") as device:
+        device.write(input_str)
+
 def main():
-    print("Welcome to Chatbot!")
-    print("Type your messages, or type 'quit' or 'q' to exit.")
+    print("Chatbot Helper: Running")
     while True:
-        user_input = input("You: ")
+        user_input = input("User input: ")
         if user_input.lower() in ["quit", "q"]:
-            print("Exiting Chatbot.")
             break
-        send_input_to_kernel(user_input)
-        response = read_response_from_kernel()
-        print("Chatbot:", response)
+        write_input(user_input)
+        # Simulate processing delay or other tasks
+        response = read_response()
+        print("Chatbot response:", response)
 
 if __name__ == "__main__":
     main()
