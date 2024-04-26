@@ -4,7 +4,7 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 
-#define DEVICE_NAME "chatbot_device"
+#define DEVICE_NAME "chatbot"
 #define BUF_SIZE 256
 
 static int major_number;
