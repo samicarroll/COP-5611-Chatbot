@@ -1,15 +1,11 @@
-import openai
+def send_input_to_kernel(input_str):
+    with open("/dev/chatbot", "w") as device:
+        device.write(input_str)
 
-# Set your OpenAI API key
-openai.api_key = ''
-
-def send_input_to_openai(input_str):
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=input_str,
-        max_tokens=50
-    )
-    return response.choices[0].text.strip()
+def read_response_from_kernel():
+    with open("/dev/chatbot", "r") as device:
+        response = device.read()
+        return response
 
 def main():
     print("Welcome to Chatbot!")
@@ -19,7 +15,8 @@ def main():
         if user_input.lower() in ["quit", "q"]:
             print("Exiting Chatbot.")
             break
-        response = send_input_to_openai(user_input)
+        send_input_to_kernel(user_input)
+        response = read_response_from_kernel()
         print("Chatbot:", response)
 
 if __name__ == "__main__":
