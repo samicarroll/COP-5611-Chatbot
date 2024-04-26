@@ -3,7 +3,7 @@
 ## System Requirements
 *Operating System*
 
-This project requires a **Linux Operating System**. Because my host machine has an arm64 architecture with macOS, I chose to run the project on a VM (UTM). 
+This project requires a **Linux Operating System**. Because my host machine has an arm64 architecture with macOS, I chose to run the project on a VM (Parallels). 
 
 I ran into many issues trying to find a VM and iso image that worked with my host machine. Due to prior knowledge, I tried to use VirtualBox with a Fedora 32 bit OS. I was unsure if this would work with the program or my hardware, but it was an OS and VM I was comfortable using. However, the arm64 iso image provided on the Fedora website did not work with VirtualBox. I believe the problem was with VirtualBox, not the iso, as this issue occured with multiple operating systems, and the iso's worked with other VMs. 
 
