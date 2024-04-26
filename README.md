@@ -7,15 +7,13 @@ This project requires a **Linux Operating System**. Because my host machine has 
 
 I ran into many issues trying to find a VM and iso image that worked with my host machine. Due to prior knowledge, I tried to use VirtualBox with a Fedora 32 bit OS. I was unsure if this would work with the program or my hardware, but it was an OS and VM I was comfortable using. However, the arm64 iso image provided on the Fedora website did not work with VirtualBox. I believe the problem was with VirtualBox, not the iso, as this issue occured with multiple operating systems, and the iso's worked with other VMs. 
 
-Overall, the VM I chose was UTM running a Fedora iso image for arm64 architecture. 
-
+Overall, the VM I chose was Parallels running a Fedora iso image for arm64 architecture. 
 
 *Programming Languages*
 
-Ensure the following Programming languages are installed on the Target Machine:
+Ensure the following Programming languages and tools are installed on the Target Machine:
 1. Python3
 2. C & GCC
-
 
 ## Build The Project
 Before building the project, the source code must be updated with your OpenAI API Key. Because this API key is unqiue to your OpenAI account, it must be removed to be published to GitHub. 
