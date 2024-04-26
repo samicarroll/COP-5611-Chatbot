@@ -3,12 +3,18 @@
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 #include <linux/slab.h>
+#include <linux/kfifo.h>
+#include <linux/sched.h>
+#include <linux/wait.h>
 
 #define DEVICE_NAME "chatbot"
 #define BUF_SIZE 256
 
 static int major_number;
-static char *chat_response = "Hello! I'm the ChatGPT chatbot kernel module.";
+static char response_buffer[BUF_SIZE];
+static DECLARE_KFIFO(response_fifo, char, BUF_SIZE);
+static DECLARE_WAIT_QUEUE_HEAD(response_wait_queue);
+static int response_ready;
 
 static int device_open(struct inode *inode, struct file *file) {
     return 0; // Always succeed
@@ -19,15 +25,54 @@ static int device_release(struct inode *inode, struct file *file) {
 }
 
 static ssize_t device_read(struct file *file, char __user *buffer, size_t length, loff_t *offset) {
-    size_t bytes_to_copy = min(length, strlen(chat_response) + 1); // +1 for null terminator
-    if (copy_to_user(buffer, chat_response, bytes_to_copy) != 0)
-        return -EFAULT;
-    return bytes_to_copy;
+    ssize_t bytes_read = 0;
+
+    if (wait_event_interruptible(response_wait_queue, response_ready != 0))
+        return -ERESTARTSYS;
+
+    if (kfifo_len(&response_fifo) > 0) {
+        if (length > kfifo_len(&response_fifo))
+            length = kfifo_len(&response_fifo);
+
+        if (copy_to_user(buffer, response_fifo, length))
+            return -EFAULT;
+
+        kfifo_out(&response_fifo, buffer, length);
+        bytes_read = length;
+    }
+
+    response_ready = 0;
+
+    return bytes_read;
 }
 
 static ssize_t device_write(struct file *file, const char __user *buffer, size_t length, loff_t *offset) {
-    // Handle input from user space (not implemented in this example)
-    return length; // Return the number of bytes written
+    char *input = kmalloc(length + 1, GFP_KERNEL);
+
+    if (!input)
+        return -ENOMEM;
+
+    if (copy_from_user(input, buffer, length)) {
+        kfree(input);
+        return -EFAULT;
+    }
+
+    input[length] = '\0';
+
+    // Pass input to user-space helper program for API call
+    // For simplicity, we just print the input here
+    printk(KERN_INFO "Received input: %s\n", input);
+
+    // Simulate API response
+    snprintf(response_buffer, BUF_SIZE, "ChatGPT response to: %s", input);
+    kfifo_in(&response_fifo, response_buffer, strlen(response_buffer));
+
+    response_ready = 1;
+    wake_up_interruptible(&response_wait_queue);
+
+    kfree(input);
+
+    return length;
 }
 
 static struct file_operations file_ops = {
@@ -51,3 +96,6 @@ static void __exit chatbot_exit(void) {
     unregister_chrdev(major_number, DEVICE_NAME);
     printk(KERN_INFO "Unregistered device\n");
 }
+
+module_init(chatbot_init);
+module_exit(chatbot_exit);
